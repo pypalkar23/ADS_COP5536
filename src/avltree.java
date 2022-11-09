@@ -7,9 +7,11 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//The Wrapper Class
 public class avltree {
     public static final String NULL_STRING = "NULL";
 
+    //Type of operations that can be performed on a tree
     enum Op {
         Initialize("Initialize"),
         Insert("Insert"),
@@ -27,18 +29,20 @@ public class avltree {
     }
 
     AVLTree tree = null;
-    List<Operation> operations;
-    ResultWriter resultWriter;
+    List<Operation> operations; //List to store operations read from file
+    ResultWriter resultWriter; //Output file writer
 
     public avltree() {
         resultWriter = new ResultWriter();
         operations = new LinkedList<>();
     }
 
+
     private void initializeTree() {
         this.tree = new AVLTree();
     }
 
+    //read the operations from input file and store them in the list to process them later
     private void getOperationsFromFile(String filename) throws FileNotFoundException {
         File file = new File(filename);
         Scanner sc = new Scanner(file);
@@ -50,6 +54,7 @@ public class avltree {
         }
     }
 
+    //wrapper for writing result for the search operation
     private void writeResult(String text) {
         try {
             this.resultWriter.writeToFile(text);
@@ -58,6 +63,7 @@ public class avltree {
         }
     }
 
+    //wrapper to close the file
     private void closeWriter() {
         try {
             this.resultWriter.close();
@@ -66,14 +72,17 @@ public class avltree {
         }
     }
 
+    //wrapper for inserting node into a tree
     private void insert(int val) {
         this.tree.insert(val);
     }
 
+    //wrapper for deleting node from tree
     private void delete(int val) {
         this.tree.delete(val);
     }
 
+    //wrapper for searching a single value in tree
     private void search(int val) {
         String res = tree.search(val);
         if (res == null)
@@ -82,6 +91,7 @@ public class avltree {
             this.writeResult(res);
     }
 
+    //wrapper for searching value that are in the given range
     private void search(int val1, int val2) {
         List<String> res = tree.search(val1, val2);
         if (res.isEmpty()) {
@@ -90,7 +100,9 @@ public class avltree {
             this.writeResult(String.join(",", res));
         }
     }
-
+    /*reads a line and makes a java object for the action and its associated details
+    i.e initialize/insert/delete/search
+    */
     private static Operation readRecordFromLine(String line) {
         Operation operation = null;
         Pattern pattern = Pattern.compile("^([A-Za-z]+)\\(([0-9,]*)\\)$");
@@ -127,6 +139,7 @@ public class avltree {
         return operation;
     }
 
+    //Perform Operations One By One
     private void performOperations() {
         for (Operation op : this.operations) {
             //System.out.println(op);
@@ -153,6 +166,7 @@ public class avltree {
         closeWriter();
     }
 
+    //Enum for the operations - Initialize/Insert/Delete/Search
     static class Operation {
 
         private Op opcode;
@@ -199,7 +213,9 @@ public class avltree {
         }
     }
 
+    //The Actual AVL Tree Class
     class AVLTree {
+        //Individual Node Structure
         class Node {
             int data;
             int height;
@@ -214,6 +230,7 @@ public class avltree {
 
         Node root;
 
+        //------------------Tree Print Block Start------------------
         private void inorder(Node node) {
             if (node != null) {
                 inorder(node.left);
@@ -226,41 +243,49 @@ public class avltree {
             inorder(this.root);
             System.out.println("\n--------");
         }
+        //------------------Tree Print Block End------------------
 
+        //------------------Insert Block Start------------------
         public Node insert(int data) {
             root = insert(root, data);
             return root;
         }
 
+
         private Node insert(Node node, int data) {
             if (node == null) {
                 return (new Node(data));
             }
+            //insert to the left
             else if (data < node.data)
                 node.left = insert(node.left, data);
+            //insert to the right
             else if (data > node.data)
                 node.right = insert(node.right, data);
             else
+                //if node is already present simply return that node
                 return node;
 
+            //set height for ancestor node
             node.height = 1+Math.max(getHeight(node.left),getHeight(node.right));
 
+            //get balance factor
             int balance = getBalance(node);
-            /* left left case */
+            /* RR Rotation */
             if (balance > 1 && data < node.left.data)
                 return rightRotate(node);
 
-            /* right right case */
+            /* LL Rotation */
             if (balance < -1 && data > node.right.data)
                 return leftRotate(node);
 
-            /* left right case */
+            /* LR Rotation */
             if (balance > 1 && data > node.left.data) {
                 node.left = leftRotate(node.left);
                 return rightRotate(node);
             }
 
-            /* right left case */
+            /* RL Rotation */
             if (balance < -1 && data < node.right.data) {
                 node.right = rightRotate(node.right);
                 return leftRotate(node);
@@ -268,25 +293,7 @@ public class avltree {
 
             return node;
         }
-
-        private int getHeight(Node node) {
-            if (node == null)
-                return 0;
-            return node.height;
-        }
-
-        private int getBalance(Node node) {
-            if (node == null)
-                return 0;
-            return this.getHeight(node.left) - this.getHeight(node.right);
-        }
-
-        private Node findMin(Node node) {
-            Node temp = node;
-            while (temp.left != null)
-                temp = temp.left;
-            return temp;
-        }
+        //------------------Insert Block End------------------
 
         public void delete(int data) {
             this.root = delete(this.root, data);
@@ -297,10 +304,13 @@ public class avltree {
                 return node;
             }
             if (data < node.data) {
+                //lookup to the left deletion
                 node.left = delete(node.left, data);
             } else if (data > node.data) {
+                //lookup to the right deletion
                 node.right = delete(node.right, data);
             } else {
+
                 if ((node.left == null) || (node.right == null)) {
                     Node temp = null;
                     if (temp == node.left)
@@ -315,6 +325,10 @@ public class avltree {
                     }
 
                 } else {
+                    /*
+                    find node to replace the current node
+                    and delete that node
+                    */
                     Node temp = this.findMin(node.right);
                     node.data = temp.data;
                     node.right = delete(node.right, temp.data);
@@ -324,20 +338,25 @@ public class avltree {
             if (node == null)
                 return node;
 
+            //set the height
             node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
 
             int balance = this.getBalance(node);
 
+            //LL Rotation
             if (balance > 1 && getBalance(node.left) >= 0) {
                 return rightRotate(node);
             }
+            //LR Rotation
             if (balance > 1 && getBalance(node.left) < 0) {
                 node.left = leftRotate(node.left);
                 return rightRotate(node);
             }
+            //RR Rotation
             if (balance < -1 && getBalance(node.right) <= 0) {
                 return leftRotate(node);
             }
+            //LR Rotation
             if (balance < -1 && getBalance(node.right) > 0) {
                 node.right = rightRotate(node.right);
                 return leftRotate(node);
@@ -346,6 +365,27 @@ public class avltree {
             return node;
         }
 
+        //AVL Helper function Block Start
+        private int getHeight(Node node) {
+            if (node == null)
+                return 0;
+            return node.height;
+        }
+
+        //calculates balance factor for the node in question
+        private int getBalance(Node node) {
+            if (node == null)
+                return 0;
+            return this.getHeight(node.left) - this.getHeight(node.right);
+        }
+
+        //finds the node which is inorder successor of the node marked for deletion
+        private Node findMin(Node node) {
+            Node temp = node;
+            while (temp.left != null)
+                temp = temp.left;
+            return temp;
+        }
         private Node leftRotate(Node x) {
             Node y = x.right;
             Node T2 = y.left;
@@ -371,7 +411,10 @@ public class avltree {
 
             return x;
         }
+        //AVL helper function end
 
+        //--------search block start----------
+        //Search a single value
         public String search(int val) {
             return this.search(this.root, val);
         }
@@ -389,6 +432,7 @@ public class avltree {
             return this.search(node.right, val);
         }
 
+        //Search for values in given range
         public List<String> search(int val1, int val2) {
             List<String> result = new LinkedList<>();
             this.search(this.root, val1, val2, result);
@@ -408,10 +452,12 @@ public class avltree {
 
             search(node.right,val1,val2,result);
         }
+        //------------- search block end ------------
 
     }
 
     class ResultWriter {
+        //Output file writer which writes to a file named output_file.txt;
         private static final String OUTPUT_FILE_NAME = "output_file.txt";
         private FileWriter writer;
 
