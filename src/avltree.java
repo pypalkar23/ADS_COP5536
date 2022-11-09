@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class avltree {
     public static final String NULL_STRING = "NULL";
 
@@ -28,7 +27,6 @@ public class avltree {
     }
 
     AVLTree tree = null;
-
     List<Operation> operations;
     ResultWriter resultWriter;
 
@@ -121,7 +119,6 @@ public class avltree {
                         val2 = Integer.parseInt(temp[1]);
                     }
                     operation = new Operation(Op.Search, val1, val2);
-
                     break;
                 default:
                     break;
@@ -132,7 +129,7 @@ public class avltree {
 
     private void performOperations() {
         for (Operation op : this.operations) {
-            System.out.println(op);
+            //System.out.println(op);
             switch (op.opcode) {
                 case Initialize:
                     this.initializeTree();
@@ -150,47 +147,10 @@ public class avltree {
                         this.search(op.getVal1());
                     break;
             }
-            this.tree.print();
+            //this.tree.print();
         }
 
         closeWriter();
-    }
-
-    public static void main(String[] args) {
-        avltree at = new avltree();
-        try {
-            at.getOperationsFromFile(args[0]);
-            at.performOperations();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        /*
-        read file name
-        read queries
-        create tree
-        show output for search queries
-        Initialize()
-        Insert(21)
-        Insert(108)
-        Insert(5)
-        Insert(1897)
-        Insert(4325)
-        Delete(108)
-        Search(1897)
-        Insert(102)
-        Insert(65)
-        Delete(102)
-        Delete(21)
-        Insert(106)
-        Insert(23)
-        Search(23,99)
-        Insert(32)
-        Insert(220)
-        Search(33)
-        Search(21)
-        Delete(4325)
-        Search(32)
-        */
     }
 
     static class Operation {
@@ -266,8 +226,6 @@ public class avltree {
             inorder(this.root);
             System.out.println("\n--------");
         }
-
-
 
         public Node insert(int data) {
             root = insert(root, data);
@@ -351,7 +309,6 @@ public class avltree {
                         temp = node.left;
 
                     if (node == null) {
-                        temp = node;
                         node = null;
                     } else {
                         node = temp;
@@ -472,13 +429,21 @@ public class avltree {
         }
 
         public void writeToFile(String txt) throws Exception {
-            //System.out.println(txt);
             this.writer.write(String.format("%s\n",txt));
-
         }
 
         public void close() throws Exception {
             writer.close();
+        }
+    }
+
+    public static void main(String[] args) {
+        avltree at = new avltree();
+        try {
+            at.getOperationsFromFile(args[0]);
+            at.performOperations();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
