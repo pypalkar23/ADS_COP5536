@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 //The Wrapper Class
 public class avltree {
     public static final String NULL_STRING = "NULL";
-
     //Type of operations that can be performed on a tree
     enum Op {
         Initialize("Initialize"),
@@ -139,8 +138,8 @@ public class avltree {
         return operation;
     }
 
-    //Perform Operations One By One
     private void performOperations() {
+        //Perform Operations Stored in the list One By One
         for (Operation op : this.operations) {
             //System.out.println(op);
             switch (op.opcode) {
@@ -168,7 +167,6 @@ public class avltree {
 
     //Enum for the operations - Initialize/Insert/Delete/Search
     static class Operation {
-
         private Op opcode;
         private Integer val1;
         private Integer val2;
@@ -231,6 +229,7 @@ public class avltree {
         Node root;
 
         //------------------Tree Print Block Start------------------
+        //Used for debugging
         private void inorder(Node node) {
             if (node != null) {
                 inorder(node.left);
@@ -247,8 +246,8 @@ public class avltree {
 
         //------------------Insert Block Start------------------
         public Node insert(int data) {
-            root = insert(root, data);
-            return root;
+            this.root = insert(this.root, data);
+            return this.root;
         }
 
 
@@ -270,31 +269,30 @@ public class avltree {
             node.height = 1+Math.max(getHeight(node.left),getHeight(node.right));
 
             //get balance factor
-            int balance = getBalance(node);
+            int currentBF = getBalanceFactor(node);
             /* RR Rotation */
-            if (balance > 1 && data < node.left.data)
-                return rightRotate(node);
+            if (currentBF > 1 && data < node.left.data)
+                return rotateRight(node);
 
             /* LL Rotation */
-            if (balance < -1 && data > node.right.data)
-                return leftRotate(node);
+            if (currentBF < -1 && data > node.right.data)
+                return rotateLeft(node);
 
             /* LR Rotation */
-            if (balance > 1 && data > node.left.data) {
-                node.left = leftRotate(node.left);
-                return rightRotate(node);
+            if (currentBF > 1 && data > node.left.data) {
+                node.left = rotateLeft(node.left);
+                return rotateRight(node);
             }
 
             /* RL Rotation */
-            if (balance < -1 && data < node.right.data) {
-                node.right = rightRotate(node.right);
-                return leftRotate(node);
+            if (currentBF < -1 && data < node.right.data) {
+                node.right = rotateRight(node.right);
+                return rotateLeft(node);
             }
 
             return node;
         }
         //------------------Insert Block End------------------
-
         public void delete(int data) {
             this.root = delete(this.root, data);
         }
@@ -304,13 +302,13 @@ public class avltree {
                 return node;
             }
             if (data < node.data) {
-                //lookup to the left deletion
+                //lookup to the left for deletion
                 node.left = delete(node.left, data);
             } else if (data > node.data) {
-                //lookup to the right deletion
+                //lookup to the right for deletion
                 node.right = delete(node.right, data);
             } else {
-
+                //if one of the child is null replace the current node with non-null child
                 if ((node.left == null) || (node.right == null)) {
                     Node temp = null;
                     if (temp == node.left)
@@ -326,10 +324,11 @@ public class avltree {
 
                 } else {
                     /*
-                    find node to replace the current node
-                    and delete that node
+                    find predecessor to the current node
+                    replace current node's value with the predecessor's
+                    and delete the predecessor
                     */
-                    Node temp = this.findMin(node.right);
+                    Node temp = this.findReplaceableNode(node.right);
                     node.data = temp.data;
                     node.right = delete(node.right, temp.data);
                 }
@@ -341,25 +340,25 @@ public class avltree {
             //set the height
             node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
 
-            int balance = this.getBalance(node);
+            int balanceFactor = this.getBalanceFactor(node);
 
             //LL Rotation
-            if (balance > 1 && getBalance(node.left) >= 0) {
-                return rightRotate(node);
+            if (balanceFactor > 1 && getBalanceFactor(node.left) >= 0) {
+                return rotateRight(node);
             }
             //LR Rotation
-            if (balance > 1 && getBalance(node.left) < 0) {
-                node.left = leftRotate(node.left);
-                return rightRotate(node);
+            if (balanceFactor > 1 && getBalanceFactor(node.left) < 0) {
+                node.left = rotateLeft(node.left);
+                return rotateRight(node);
             }
             //RR Rotation
-            if (balance < -1 && getBalance(node.right) <= 0) {
-                return leftRotate(node);
+            if (balanceFactor < -1 && getBalanceFactor(node.right) <= 0) {
+                return rotateLeft(node);
             }
             //LR Rotation
-            if (balance < -1 && getBalance(node.right) > 0) {
-                node.right = rightRotate(node.right);
-                return leftRotate(node);
+            if (balanceFactor < -1 && getBalanceFactor(node.right) > 0) {
+                node.right = rotateRight(node.right);
+                return rotateLeft(node);
             }
 
             return node;
@@ -373,43 +372,43 @@ public class avltree {
         }
 
         //calculates balance factor for the node in question
-        private int getBalance(Node node) {
+        private int getBalanceFactor(Node node) {
             if (node == null)
                 return 0;
             return this.getHeight(node.left) - this.getHeight(node.right);
         }
 
         //finds the node which is inorder successor of the node marked for deletion
-        private Node findMin(Node node) {
-            Node temp = node;
-            while (temp.left != null)
-                temp = temp.left;
-            return temp;
+        private Node findReplaceableNode(Node node) {
+            Node current = node;
+            while (current.left != null)
+                current = current.left;
+            return current;
         }
-        private Node leftRotate(Node x) {
-            Node y = x.right;
-            Node T2 = y.left;
+        private Node rotateLeft(Node node) {
+            Node rightChild = node.right;
+            Node grandChild = rightChild.left;
 
-            y.left = x;
-            x.right = T2;
+            rightChild.left = node;
+            node.right = grandChild;
 
-            x.height = 1 + Math.max(this.getHeight(x.left), this.getHeight(x.right));
-            y.height = 1 + Math.max(this.getHeight(y.left), this.getHeight(y.right));
+            node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+            rightChild.height = 1 + Math.max(this.getHeight(rightChild.left), this.getHeight(rightChild.right));
 
-            return y;
+            return rightChild;
         }
 
-        private Node rightRotate(Node y) {
-            Node x = y.left;
-            Node T2 = x.right;
+        private Node rotateRight(Node node) {
+            Node leftChild = node.left;
+            Node grandChild = leftChild.right;
 
-            x.right = y;
-            y.left = T2;
+            leftChild.right = node;
+            node.left = grandChild;
 
-            y.height = 1 + Math.max(this.getHeight(y.left), this.getHeight(y.right));
-            x.height = 1 + Math.max(this.getHeight(x.left), this.getHeight(x.right));
+            node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+            leftChild.height = 1 + Math.max(this.getHeight(leftChild.left), this.getHeight(leftChild.right));
 
-            return x;
+            return leftChild;
         }
         //AVL helper function end
 
