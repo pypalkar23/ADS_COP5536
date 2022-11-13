@@ -8,23 +8,6 @@ import java.util.regex.Pattern;
 public class avltree {
     public static final String NULL_STRING = "NULL";
 
-    //Enum for the operations - Initialize/Insert/Delete/Search
-    public enum Op {
-        Initialize("Initialize"),
-        Insert("Insert"),
-        Delete("Delete"),
-        Search("Search");
-
-        private final String label;
-        Op(String label){
-            this.label = label;
-        }
-
-        public String toString(){
-            return  this.label;
-        }
-    }
-
     AVLTreeUtil tree = null;
     List<Operation> operations; //List to store operations read from file
     ResultWriter resultWriter; //Output file writer

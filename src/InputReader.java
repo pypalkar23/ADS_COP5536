@@ -34,17 +34,17 @@ public class InputReader {
         if (matcher.find()) {
             String tempOp = matcher.group(1);
             String data = matcher.group(2);
-            switch (avltree.Op.valueOf(tempOp)) {
+            switch (OpCode.valueOf(tempOp)) {
                 case Initialize:
-                    operation = new Operation(avltree.Op.Initialize);
+                    operation = new Operation(OpCode.Initialize);
                     break;
 
                 case Insert:
-                    operation = new Operation(avltree.Op.Insert, Integer.parseInt(data));
+                    operation = new Operation(OpCode.Insert, Integer.parseInt(data));
                     break;
 
                 case Delete:
-                    operation = new Operation(avltree.Op.Delete, Integer.parseInt(data));
+                    operation = new Operation(OpCode.Delete, Integer.parseInt(data));
                     break;
 
                 case Search:
@@ -54,7 +54,7 @@ public class InputReader {
                     if (temp.length > 1) {
                         val2 = Integer.parseInt(temp[1]);
                     }
-                    operation = new Operation(avltree.Op.Search, val1, val2);
+                    operation = new Operation(OpCode.Search, val1, val2);
                     break;
                 default:
                     break;
