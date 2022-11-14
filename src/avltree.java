@@ -4,7 +4,6 @@ import java.util.List;
 //The Wrapper Class
 public class avltree {
     public static final String NULL_STRING = "NULL";
-
     AVLTreeUtil tree = null;
     List<Operation> operations; //List to store operations read from file
     ResultWriter resultWriter; //Output file writer

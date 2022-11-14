@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 DIR_NAME="Palkar_Mandar"
 SOURCE_DIR_NAME="./src"
-REPORT_FILE="Report.docx"
+REPORT_FILE="Report.pdf"
 
 echo "Removing class and other files..."
 rm -f "${SOURCE_DIR_NAME}/*.class"
