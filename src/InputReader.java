@@ -29,7 +29,7 @@ public class InputReader {
     */
     private Operation readRecordFromLine(String line) {
         Operation operation = null;
-        Pattern pattern = Pattern.compile("^([A-Za-z]+)\\(([0-9,]*)\\)$");
+        Pattern pattern = Pattern.compile("^([A-Za-z]+)\\(([\\-0-9,]*)\\)$");
         Matcher matcher = pattern.matcher(line.trim());
         if (matcher.find()) {
             String tempOp = matcher.group(1);

@@ -6,7 +6,7 @@ REPORT_FILE="Report.docx"
 echo "Removing class and other files..."
 rm -f "${SOURCE_DIR_NAME}/*.class"
 rm -f "${SOURCE_DIR_NAME}/output_file.txt"
-rm -f "${SOURCE_DIR_NAME}/sample.txt"
+rm -f ${SOURCE_DIR_NAME}/sample*.txt
 
 echo "Removing Directory ${DIR_NAME} ..."
 rm -rf ${DIR_NAME}
