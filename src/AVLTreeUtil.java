@@ -32,20 +32,20 @@ public class AVLTreeUtil {
         if (treeNode == null) {
             return (new TreeNode(data));
         }
-        //insert to the left
+        //Insert to the left
         else if (data < treeNode.data)
             treeNode.left = insert(treeNode.left, data);
-            //insert to the right
+            //Insert to the right
         else if (data > treeNode.data)
             treeNode.right = insert(treeNode.right, data);
         else
-            //if treeNode is already present simply return that treeNode
+            //If treeNode is already present simply return that treeNode
             return treeNode;
 
-        //set height for ancestor treeNode
+        //Set height for ancestor treeNode
         treeNode.height = 1+Math.max(getHeight(treeNode.left),getHeight(treeNode.right));
 
-        //get balance factor
+        //Get balance factor
         int currentBF = getBalanceFactor(treeNode);
         /* RR Rotation */
         if (currentBF > 1 && data < treeNode.left.data)
@@ -79,13 +79,13 @@ public class AVLTreeUtil {
             return treeNode;
         }
         if (data < treeNode.data) {
-            //lookup to the left for deletion
+            //Lookup to the left for deletion
             treeNode.left = delete(treeNode.left, data);
         } else if (data > treeNode.data) {
-            //lookup to the right for deletion
+            //Lookup to the right for deletion
             treeNode.right = delete(treeNode.right, data);
         } else {
-            //if one of the child is null replace the current treeNode with non-null child
+            //If one of the child is null replace the current treeNode with non-null child
             if ((treeNode.left == null) || (treeNode.right == null)) {
                 TreeNode temp = null;
                 if (temp == treeNode.left)
@@ -101,7 +101,7 @@ public class AVLTreeUtil {
 
             } else {
                     /*
-                    find predecessor to the current treeNode
+                    Find predecessor to the current treeNode
                     replace current treeNode's value with the predecessor's
                     and delete the predecessor
                     */
@@ -114,7 +114,7 @@ public class AVLTreeUtil {
         if (treeNode == null)
             return treeNode;
 
-        //set the height
+        //Set the height for current node
         treeNode.height = Math.max(this.getHeight(treeNode.left), this.getHeight(treeNode.right)) + 1;
 
         int balanceFactor = this.getBalanceFactor(treeNode);
@@ -148,14 +148,14 @@ public class AVLTreeUtil {
         return treeNode.height;
     }
 
-    //calculates balance factor for the treeNode in question
+    //Calculates balance factor for the treeNode in question
     private int getBalanceFactor(TreeNode treeNode) {
         if (treeNode == null)
             return 0;
         return this.getHeight(treeNode.left) - this.getHeight(treeNode.right);
     }
 
-    //finds the treeNode which is inorder successor of the treeNode marked for deletion
+    //Finds the treeNode which is inorder successor of the treeNode marked for deletion
     private TreeNode findReplaceableNode(TreeNode treeNode) {
         TreeNode current = treeNode;
         while (current.left != null)
@@ -189,7 +189,7 @@ public class AVLTreeUtil {
     }
     //AVL helper function end
 
-    //--------search block start----------
+    //--------Search block start----------
     //Search a single value
     public String search(int val) {
         return this.search(this.root, val);
@@ -228,6 +228,6 @@ public class AVLTreeUtil {
 
         search(treeNode.right,val1,val2,result);
     }
-    //------------- search block end ------------
+    //------------- Search block end ------------
 
 }

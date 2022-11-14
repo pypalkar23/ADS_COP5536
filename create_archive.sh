@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 DIR_NAME="Palkar_Mandar"
 SOURCE_DIR_NAME="./src"
+REPORT_FILE="Report.docx"
+
 echo "Removing class and other files..."
 rm -f "${SOURCE_DIR_NAME}/*.class"
 rm -f "${SOURCE_DIR_NAME}/output_file.txt"
@@ -19,7 +21,10 @@ echo "Copying source files to Directory $DIR_NAME ..."
 cp ${SOURCE_DIR_NAME}/*.java ${DIR_NAME}
 
 echo "Copying makefile files to Directory $DIR_NAME ..."
-cp makefile ${DIR_NAME}
+cp Makefile ${DIR_NAME}
+
+echo "Copying Report to Directory $DIR_NAME ..."
+cp ${REPORT_FILE} ${DIR_NAME}
 
 echo "Creating Archive $DIR_NAME.zip ..."
 zip -qr "${DIR_NAME}.zip" ${DIR_NAME}

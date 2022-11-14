@@ -1,8 +1,5 @@
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 //The Wrapper Class
 public class avltree {
@@ -77,7 +74,6 @@ public class avltree {
     private void performOperations() {
         //Perform Operations Stored in the list One By One
         for (Operation op : this.operations) {
-            //System.out.println(op);
             switch (op.getOpcode()) {
                 case Initialize:
                     this.initializeTree();
@@ -95,18 +91,21 @@ public class avltree {
                         this.search(op.getVal1());
                     break;
             }
-            //this.tree.print();
         }
 
         closeWriter();
+    }
+
+    public void execute(String filePath) throws Exception{
+        this.readOperations(filePath);
+        this.performOperations();
     }
 
     public static void main(String[] args) {
         avltree at = new avltree();
         String inputFilePath = args[0];
         try {
-            at.readOperations(inputFilePath);
-            at.performOperations();
+            at.execute(inputFilePath);
         } catch (Exception e) {
             e.printStackTrace();
         }

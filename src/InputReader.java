@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class InputReader {
 
-    //read the operations from input file and store them in the list to process them later
+    //Read the operations from input file and store them in the list to process them later
     public List<Operation> getOperationsFromFile(String filename) throws FileNotFoundException {
         List<Operation> operations = new LinkedList<>();
         File file = new File(filename);
@@ -24,10 +24,10 @@ public class InputReader {
     }
 
 
-    /*reads a line and makes a java object for the action and its associated details
+    /*Reads a line and makes a java object for the action and its associated details
     i.e initialize/insert/delete/search
     */
-    private static Operation readRecordFromLine(String line) {
+    private Operation readRecordFromLine(String line) {
         Operation operation = null;
         Pattern pattern = Pattern.compile("^([A-Za-z]+)\\(([0-9,]*)\\)$");
         Matcher matcher = pattern.matcher(line.trim());
